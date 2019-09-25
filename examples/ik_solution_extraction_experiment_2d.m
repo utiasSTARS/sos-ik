@@ -127,6 +127,7 @@ parfor idx=1:size(goals,2)
 end
 T_local = toc;
 
-%% stats
+%% Results
+
 analyze_sols;
 

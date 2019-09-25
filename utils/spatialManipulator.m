@@ -42,6 +42,59 @@ classdef spatialManipulator
             p = [T(1,4); T(2,4) ; T(3,4)];
             
         end
+
+        function [P] = FKLinkPositions(obj,phi,theta)
+
+            d = obj.d;
+            P = [];
+            T = eye(4);
+            for idx = 1:length(phi)
+                T = sphericalJointTransform(d(idx), theta(idx), phi(idx), T);
+                P = [P, T(1:3,4)];
+            end
+                
+        end 
+        
+        function [phi, theta] = IKLinkPositions(obj,P)
+        %IKLINKPOSITIONS Given link positions, find joint angles
+            
+            l = obj.l;
+            P = [[0,0,0]', P];
+            R = eye(3);
+            
+            phi = [];
+            theta = [];
+            
+            for idx = 1:size(P,2)-1 
+                p1 = P(:,idx);
+                p2 = P(:,idx+1);
+                
+                d = norm(p2-p1);%d(idx);
+                
+                A = d.*R;
+                B = p2-p1; 
+                X = linsolve(A,B);
+                
+                theta_idx = real(acos(X(3)));
+                theta = [theta, theta_idx ]; 
+                
+                phi_idx = atan2(X(2),X(1));
+                phi = [phi, phi_idx];
+                
+                % update transforms
+                Rz = [cos(phi_idx) -sin(phi_idx) 0;
+                      sin(phi_idx) cos(phi_idx) 0;
+                      0 0 1];
+                
+                Ry = [cos(theta_idx) 0 sin(theta_idx);
+                      0 1 0;
+                      -sin(theta_idx) 0 cos(theta_idx)]; 
+                
+                R = R*Rz*Ry; 
+                
+            end 
+                
+        end 
         
         function [D, Cm, Cn, A] = distanceMatrix(obj)
         % DISTANCEMATRIX returns an incomplete distance matrix describing
@@ -82,58 +135,6 @@ classdef spatialManipulator
 
             D = [Cm, A; A', Cn];
         end
-
-        function [P] = FKLinkPositions(obj,phi,theta)
-
-            d = obj.d;
-            P = [];
-            T = eye(4);
-            for idx = 1:length(phi)
-                T = sphericalJointTransform(d(idx), theta(idx), phi(idx), T);
-                P = [P, T(1:3,4)];
-            end
-                
-        end 
-        
-        function [phi, theta] = IKLinkPositions(obj,P)
-            
-            d = obj.d;
-            P = [[0,0,0]', P];
-            R = eye(3);
-            
-            phi = [];
-            theta = [];
-            
-            for idx = 1:size(P,2)-1 
-                p1 = P(:,idx);
-                p2 = P(:,idx+1);
-                
-                l = norm(p2-p1);%d(idx);
-                
-                A = l.*R;
-                B = p2-p1; 
-                X = linsolve(A,B);
-                
-                theta_idx = real(acos(X(3)));
-                theta = [theta, theta_idx ]; 
-                
-                phi_idx = atan2(X(2),X(1));
-                phi = [phi, phi_idx];
-                
-                % update transforms
-                Rz = [cos(phi_idx) -sin(phi_idx) 0;
-                      sin(phi_idx) cos(phi_idx) 0;
-                      0 0 1];
-                
-                Ry = [cos(theta_idx) 0 sin(theta_idx);
-                      0 1 0;
-                      -sin(theta_idx) 0 cos(theta_idx)]; 
-                
-                R = R*Rz*Ry; 
-                
-            end 
-                
-        end 
     
 
     end
