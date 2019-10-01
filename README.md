@@ -1,7 +1,7 @@
 # sos-ik
 Inverse kinematics using sum of squares optimization.
 
-<img src="https://raw.githubusercontent.com/utiasSTARS/sos-ik/master/system.pdf" width="500px"/>
+<img src="https://raw.githubusercontent.com/utiasSTARS/sos-ik/master/system.png" width="500px"/>
 
 ## Installation and Dependencies 
 
