@@ -7,7 +7,7 @@ Inverse kinematics using sum of squares optimization.
 
 All code and experiments were developed and run in MATLAB R2018b.
 
-We use the [Sparse-BSOS](https://github.com/tweisser/Sparse_BSOS) Matlab package, which ships with its own modified version of SDPT3 (see the linked repository for setup details).
+We use the [Sparse-BSOS](https://github.com/tweisser/Sparse_BSOS) Matlab package, which ships with its own modified version of SDPT3. In order to use our package, you must replace the version of `sdpt3.m` found in that package with the one in this repository. 
 
 ### Usage
 The scripts `examples/ik_solution_extraction_experiment_2d.m` and `examples/ik_solution_extraction_experiment_2d.m` demonstrate usage of our main function `utils/SBSOS/solveIKSBSOS.m` on simulated 2D and 3D problem instances. The default settings of these scripts carry out experiments identical to those in our paper (see citation below). 
